@@ -1,8 +1,12 @@
 # Geospatial-Programming-Project
 References:
+
 https://search.asf.alaska.edu/#/?zoom=6.354&center=175.730,-40.176&resultsLoaded=true&granule=ALPSRS279162650-L1.5&dataset=ALOS
+
 https://gadm.org/download_country_v3.html
+
 https://data.linz.govt.nz/layer/101290-nz-building-outlines/
+
 https://data.linz.govt.nz/layer/101292-nz-building-outlines-all-sources/
 
 I.Generate Slope
