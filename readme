@@ -1,0 +1,3 @@
+The objectif of this script is to provide an automated process to create a Water Distribution Network WDN, from an existing Network.
+The generated WDN contains for each line an end and start ID of the junction. Each junction contains an information about the slope and the altitude
+Please specify your own paths to load the DEM and the WDN  and run the process.
