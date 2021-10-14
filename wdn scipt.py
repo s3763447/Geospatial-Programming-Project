@@ -2,8 +2,8 @@
 
 #lOADING LAYERS AND REMOVING PREVIOUS ONES IF EXIST
 QgsProject.instance().removeAllMapLayers()
-dem=QgsRasterLayer('E:\\Bureau\\fiverr\\Water Distribution Network\\Delivery\\data\\dem.tif', "dem")
-wdn=QgsVectorLayer('E:\\Bureau\\fiverr\\Water Distribution Network\\Delivery\\data\\wdn.shp', "WDN")
+dem=QgsRasterLayer('D:\OneDrive\MASTER\semester4\GeospatialProgramming\Module5\Module5\October14\data\data\dem.tif', "dem")
+wdn=QgsVectorLayer('D:\OneDrive\MASTER\semester4\GeospatialProgramming\Module5\Module5\October14\data\data\wdn.shp', "WDN")
 
 vald=''
 #testing if layers are valid
@@ -33,11 +33,11 @@ else:
     #new layer of juctions
     point_layer = QgsVectorLayer("Point?crs=epsg:32760", "point_layer", 'memory')
     #Remove duplicated points
-    junktions=processing.run("native:deleteduplicategeometries", {'INPUT': point_layer, 'OUTPUT': 'memory:junktions' })["OUTPUT"]   
+    junctions=processing.run("native:deleteduplicategeometries", {'INPUT': point_layer, 'OUTPUT': 'memory:junctions' })["OUTPUT"]   
 
-    pr = junktions.dataProvider()
+    pr = junctions.dataProvider()
     pr1 = wdn.dataProvider()
-    junktions.startEditing()
+    junctions.startEditing()
     wdn.startEditing()
 
     pr.addAttributes([ QgsField("id", QVariant.Int), QgsField("x", QVariant.Double), QgsField("y", QVariant.Double)])
@@ -47,16 +47,16 @@ else:
     wdn.commitChanges()
     wdn.startEditing()
 
-    junktions.commitChanges()
-    junktions.startEditing()
+    junctions.commitChanges()
+    junctions.startEditing()
 
     #loop over Network polylines and creating junctions
 
     for feature in wdn.getFeatures():
         #create a new feature of type type junction
-        feat = QgsFeature(junktions.fields())
+        feat = QgsFeature(junctions.fields())
         geom = feature.geometry().asPolyline()
-        #create new  start end points :j unctions
+        #create new  start end points :junctions
         start_point = QgsPoint(geom[0])
         end_point = QgsPoint(geom[-1])
         
@@ -82,24 +82,24 @@ else:
         wdn.updateFeature(feature)
         i+=1
         
-    junktions.commitChanges()
+    junctions.commitChanges()
     wdn.commitChanges()
     #add junctions and network layers 
-    QgsProject.instance().addMapLayer(junktions)
+    QgsProject.instance().addMapLayer(junctions)
     QgsProject.instance().addMapLayer(wdn)
 
     
-    print('#2............... Network and Junktions Created  succefully')        
-    #3............... Fill Junkions with corresponding Altitudes And Slopes
+    print('#2............... Network and Junctions Created  succefully')        
+    #3............... Fill Junctions with corresponding Altitudes And Slopes
     slope_layer = QgsProject.instance().mapLayersByName('Slope')[0]
     dem_layer = QgsProject.instance().mapLayersByName('dem')[0]
-    junktions=QgsProject.instance().mapLayersByName('junktions')[0]
+    junctions=QgsProject.instance().mapLayersByName('junctions')[0]
     #retreive altitude value from DEM file and affect it to junction points
-    junktions_altitude=processing.run("native:rastersampling", {'INPUT': junktions,'RASTERCOPY': dem_layer,'COLUMN_PREFIX':'altitude','OUTPUT': 'TEMPORARY_OUTPUT'})["OUTPUT"]
+    junctions_altitude=processing.run("native:rastersampling", {'INPUT': junctions,'RASTERCOPY': dem_layer,'COLUMN_PREFIX':'altitude','OUTPUT': 'TEMPORARY_OUTPUT'})["OUTPUT"]
     #retreive slope value from Slope layer and affect it to junction points
-    junktions_altitude_slope=processing.run("native:rastersampling", {'INPUT': junktions_altitude,'RASTERCOPY': slope_layer,'COLUMN_PREFIX':'slope','OUTPUT': 'memory:junctions_altitude_slope'})["OUTPUT"]
+    junctions_altitude_slope=processing.run("native:rastersampling", {'INPUT': junctions_altitude,'RASTERCOPY': slope_layer,'COLUMN_PREFIX':'slope','OUTPUT': 'memory:junctions_altitude_slope'})["OUTPUT"]
         
 
-    QgsProject.instance().addMapLayer(junktions_altitude_slope)
-    print('#2............... Junctions are Filled succefully') 
+    QgsProject.instance().addMapLayer(junctions_altitude_slope)
+    print('#3............... Junctions are Filled succefully') 
         
